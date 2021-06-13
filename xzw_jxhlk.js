@@ -70,19 +70,14 @@ const JD_API_HOST = 'https://api.m.jd.com/client.action';
       }
      
 
-      if(first == true ){
-      await info()
-      await checkaddress()
-      await join()
-      await help()
-      
-      }else
-      
-          
+      if(first){
+        await info()
+        await checkaddress()
+        await join()
         await help()
-
-
-
+      } else {
+        await help()
+      }
     }
   }
 })()
@@ -111,7 +106,7 @@ headers: {
       
         $.get(options, async (err, resp, data) => {
             try {
-
+              console.log('===================直接进获取商品列表方法==========================')
                     data = data.match(/(\{[^()]+\}.+)/)[1]
 
                     //console.log(data)
@@ -152,24 +147,25 @@ headers: {
       
         $.get(options, async (err, resp, data) => {
             try {
-
+              console.log('===================直接进获取收货地址方法==========================')
                     data = data.match(/(\{[^()]+\}.+)/)[1]
 
                     //console.log(data)
                     const reust = JSON.parse(data)
+                    console.log(reust)
                     //console.log(reust)
                     if(reust.errcode == 0){
                         //list = reust.data.freezone
                     //for (let i = 0; i < list.length; i++) {  
-                    $.provinceid=reust.data.provinceid
-                    $.cityid=reust.data.cityid
-                    $.countyid=reust.data.countyid
-                    $.log(`\n确认收货地址\n商品：${reust.data.skutitle}\n地址：${reust.data.address}`)
-                        
-                   // }
-                }else
+                        $.provinceid=reust.data.provinceid
+                        $.cityid=reust.data.cityid
+                        $.countyid=reust.data.countyid
+                        $.log(`\n确认收货地址\n商品：${reust.data.skutitle}\n地址：${reust.data.address}`)
+                    } else {
+                        console.log(data.msg)
+                    }
                 
-                    console.log(data.msg)
+                   
             } catch (e) {
                 $.logErr(e, resp);
             } finally {
@@ -196,7 +192,7 @@ headers: {
       
         $.get(options, async (err, resp, data) => {
             try {
-
+              console.log('===================直接砍价方法==========================')
                     data = data.match(/(\{[^()]+\}.+)/)[1]
 
                     //console.log(data)
@@ -236,21 +232,19 @@ headers: {
       
         $.get(options, async (err, resp, data) => {
             try {
-
+                    console.log('===================直接进助力方法==========================')
+                    console.log(data)
                     data = data.match(/(\{[^()]+\}.+)/)[1]
-
-                    //console.log(options)
                     const reust = JSON.parse(data)
-                    //console.log(reust)
-                    if(reust.errcode == 0){
+                    console.log(reust)
+                if (reust.errcode == 0){
                     //$.launchid=restlt.launchid
                     $.log(`\n${reust.data.guestinfo.contenttips}`)
-                        
-                   // }
-                }else
-                
+                } else {
                     console.log(data.msg)
+                }
             } catch (e) {
+              console.log('失败了！！！！！！！！！！！！！！！！！！！！！！！！')
                 $.logErr(e, resp);
             } finally {
                 resolve();
