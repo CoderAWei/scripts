@@ -93,9 +93,9 @@ headers: {
       
         $.get(options, async (err, resp, data) => {
             try {
-
+console.log('=======================第一次==========================')
                     data = JSON.parse(data);
-
+                    console.log(data.data)
                    
                     console.log(data.data.helpResult.errMsg)
                     if(data.data.helpResult.code == 16005){
@@ -130,8 +130,9 @@ headers: {
       
         $.get(options, async (err, resp, data) => {
             try {
-
+                   console.log('=======================第二次==========================')
                     data = JSON.parse(data);
+                                 console.log(data.data)
 
                    
                     console.log(data.data.helpResult.errMsg)
