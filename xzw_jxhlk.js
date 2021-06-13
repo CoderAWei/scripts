@@ -16,7 +16,7 @@ const jdCookieNode = $.isNode() ? require('./jdCookie.js') : '';
 
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
-let active = '';
+let active = 'jxhlk_20210610_6ba7dc0cd409543';
 let launchid = '';
 let first = true; //第一次参加变量设置为true查看商品ID 填写商品ID后自动获取邀请码邀请  如果只助力 变量设置为false
 
