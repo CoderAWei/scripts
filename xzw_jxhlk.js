@@ -233,7 +233,6 @@ headers: {
         $.get(options, async (err, resp, data) => {
             try {
                     console.log('===================直接进助力方法==========================')
-                    console.log(data)
                     data = data.match(/(\{[^()]+\}.+)/)[1]
                     const reust = JSON.parse(data)
                     console.log(reust)
