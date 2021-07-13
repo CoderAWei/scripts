@@ -42,7 +42,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 var date_fns_1 = require("date-fns");
 var axios_1 = require("axios");
-var TS_USER_AGENTS_1 = require("./raw_TS_USER_AGENTS");
+var raw_TS_USER_AGENTS_1 = require("./raw_TS_USER_AGENTS");
 var dotenv = require("dotenv");
 var CryptoJS = require('crypto-js');
 var crypto = require('crypto');
@@ -62,7 +62,7 @@ var UserName, index, isLogin, nickName;
                 return [4 /*yield*/, requireConfig()];
             case 2:
                 _b.sent();
-                filename = 'jd_cfd_loop.ts';
+                filename = 'raw_xzw_cfd_loop.js';
                 stream = fs.createReadStream(filename);
                 fsHash = crypto.createHash('md5');
                 stream.on('data', function (d) {
@@ -160,7 +160,7 @@ function speedUp(stk, dwType) {
                             headers: {
                                 'Host': 'm.jingxi.com',
                                 'Referer': 'https://st.jingxi.com/',
-                                'User-Agent': TS_USER_AGENTS_1["default"],
+                                'User-Agent': raw_TS_USER_AGENTS_1["default"],
                                 'Cookie': cookie
                             }
                         })];
@@ -202,7 +202,7 @@ function requestAlgo() {
                                                 'Pragma': 'no-cache',
                                                 'Cache-Control': 'no-cache',
                                                 'Accept': 'application/json',
-                                                'User-Agent': TS_USER_AGENTS_1["default"],
+                                                'User-Agent': raw_TS_USER_AGENTS_1["default"],
                                                 'Content-Type': 'application/json',
                                                 'Origin': 'https://st.jingxi.com',
                                                 'Sec-Fetch-Site': 'cross-site',
