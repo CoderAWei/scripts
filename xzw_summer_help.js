@@ -41,8 +41,7 @@ if ($.isNode()) {
 }
 
 $.appid = 'o2_act';
-const UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "JD4iPhone/9.3.5 CFNetwork/1209 Darwin/20.2.0") : ($.getdata('JDUA') ? $.getdata('JDUA') : "JD4iPhone/9.3.5 CFNetwork/1209 Darwin/20.2.0")
-
+const UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT : "jdapp;iPhone;10.0.8;15.0;239fef5700934564335c2519c4a5b764e8fca656;network/wifi;model/iPhone10,3;addressid/827662943;appBuild/167740;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1") : ($.getdata('JDUA') ? $.getdata('JDUA') : "jdapp;iPhone;10.0.8;15.0;239fef5700934564335c2519c4a5b764e8fca656;network/wifi;model/iPhone10,3;addressid/827662943;appBuild/167740;jdSupportDarkMode/0;Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148;supportJDSHWK/1")
 
 !(async () => {
   if (!cookiesArr[0]) {
@@ -81,20 +80,19 @@ const UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT :
     }
   }
   // 助力
-  let res = [], res2 = [];
-  $.innerShInviteList = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement_one.json');
-  res2 = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
-  if(!$.innerShInviteList[0]){
-    $.innerShInviteList = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
-  }
-  if(!res2[0]){
-    res2 = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
-  }
-  $.ShInviteLists = []
+  // let res = [], res2 = [];
+  // // $.innerShInviteList = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement_one.json');
+  // // res2 = await getAuthorShareCode('https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
+  // if(!$.innerShInviteList[0]){
+  //   // $.innerShInviteList = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
+  // }
+  // if(!res2[0]){
+  //   // res2 = await getAuthorShareCode('https://ghproxy.com/https://raw.githubusercontent.com/smiek2221/updateTeam/master/shareCodes/summer_movement.json');
+  // }
   $.ShInviteLists = []
   if (ShHelpAuthorFlag) {
-    $.innerShInviteLists = getRandomArrayElements([...res, ...res2], [...res, ...res2].length);
-    $.ShInviteLists.push(...$.ShInviteList,...$.innerShInviteList,...$.innerShInviteLists);
+    // $.innerShInviteLists = getRandomArrayElements([...res, ...res2], [...res, ...res2].length);
+    $.ShInviteLists.push(...$.ShInviteList);
   }else{
     $.ShInviteLists.push(...$.ShInviteList);
   }
@@ -119,8 +117,8 @@ const UA = $.isNode() ? (process.env.JD_USER_AGENT ? process.env.JD_USER_AGENT :
           }
         }
         $.ShInviteLists = []
-        $.innerShInviteLists = getRandomArrayElements([...res, ...res2], [...res, ...res2].length);
-        $.ShInviteLists.push(...$.ShInviteList,...$.innerShInviteList,...$.innerShInviteLists);
+        // $.innerShInviteLists = getRandomArrayElements([...res, ...res2], [...res, ...res2].length);
+        $.ShInviteLists.push(...$.ShInviteList);
       }
       $.canHelp = true;
     }
@@ -312,7 +310,7 @@ async function getPostRequest(type, body) {
     'Cookie': $.cookie,
     "Origin": "https://wbbny.m.jd.com",
     "Referer": "https://wbbny.m.jd.com/",
-    "User-Agent": "jdapp;iPhone;9.2.0;14.1;",
+    "User-Agent": UA,
 
   };
   return {url: url, method: method, headers: headers, body: body};
