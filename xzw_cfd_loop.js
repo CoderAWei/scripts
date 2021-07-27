@@ -47,22 +47,23 @@ var dotenv = require("dotenv");
 var CryptoJS = require('crypto-js');
 var crypto = require('crypto');
 var fs = require('fs');
+var notify = require('./sendNotify');
 dotenv.config();
 var appId = 10028, fingerprint, token, enCryptMethodJD;
-var cookie = '', cookiesArr = [], res = '';
+var cookie = '', res = '', balloon = false;
 process.env.CFD_LOOP_DELAY ? console.log('设置延迟:', parseInt(process.env.CFD_LOOP_DELAY)) : console.log('设置延迟:10000~25000随机');
-var UserName, index, isLogin, nickName;
+var UserName, index;
 !(function () { return __awaiter(void 0, void 0, void 0, function () {
-    var filename, stream, fsHash, i, shell, _i, _a, s, j, e_1, t;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var cookiesArr, filename, stream, fsHash, i, _a, isLogin, nickName, shell, _i, _b, s, j, e_1, t;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0: return [4 /*yield*/, requestAlgo()];
             case 1:
-                _b.sent();
+                _c.sent();
                 return [4 /*yield*/, requireConfig()];
             case 2:
-                _b.sent();
-                filename = 'raw_xzw_cfd_loop.js';
+                cookiesArr = _c.sent();
+                filename = __filename.split('/').pop();
                 stream = fs.createReadStream(filename);
                 fsHash = crypto.createHash('md5');
                 stream.on('data', function (d) {
@@ -71,72 +72,102 @@ var UserName, index, isLogin, nickName;
                 stream.on('end', function () {
                     var md5 = fsHash.digest('hex');
                     console.log(filename + "\u7684MD5\u662F:", md5);
+                    if (filename.indexOf('JDHelloWorld_jd_scripts_') > -1) {
+                        filename = filename.replace('JDHelloWorld_jd_scripts_', '');
+                    }
+                    axios_1["default"].get('https://api.sharecode.ga/api/md5?filename=' + filename, { timeout: 10000 })
+                        .then(function (res) {
+                        console.log('local: ', md5);
+                        console.log('remote:', res.data);
+                        if (md5 !== res.data) {
+                            notify.sendNotify("Warning", filename + "\nMD5\u6821\u9A8C\u5931\u8D25\uFF01\u4F60\u7684\u811A\u672C\u7591\u4F3C\u88AB\u7BE1\u6539\uFF01");
+                        }
+                        else {
+                            console.log('MD5校验通过！');
+                        }
+                    })["catch"](function () {
+                    });
                 });
-                _b.label = 3;
+                _c.label = 3;
             case 3:
-                if (!1) return [3 /*break*/, 19];
-                _b.label = 4;
-            case 4:
-                _b.trys.push([4, 16, , 17]);
+                if (!1) return [3 /*break*/, 21];
                 i = 0;
-                _b.label = 5;
-            case 5:
-                if (!(i < cookiesArr.length)) return [3 /*break*/, 15];
+                _c.label = 4;
+            case 4:
+                if (!(i < cookiesArr.length)) return [3 /*break*/, 19];
                 cookie = cookiesArr[i];
                 UserName = decodeURIComponent(cookie.match(/pt_pin=([^;]*)/)[1]);
                 index = i + 1;
-                isLogin = true;
-                nickName = '';
-                console.log("\n\u5F00\u59CB\u3010\u4EAC\u4E1C\u8D26\u53F7" + index + "\u3011" + (nickName || UserName) + "\n");
-                return [4 /*yield*/, speedUp('_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone')];
-            case 6:
-                res = _b.sent();
-                if (res.iRet !== 0) {
-                    console.log('去手动新手教程');
-                    return [3 /*break*/, 14];
+                return [4 /*yield*/, TotalBean(cookie)];
+            case 5:
+                _a = _c.sent(), isLogin = _a.isLogin, nickName = _a.nickName;
+                if (!isLogin) {
+                    notify.sendNotify(__filename.split('/').pop(), "cookie\u5DF2\u5931\u6548\n\u4EAC\u4E1C\u8D26\u53F7" + index + "\uFF1A" + (nickName || UserName));
+                    return [3 /*break*/, 18];
                 }
-                console.log('今日热气球:', res.dwTodaySpeedPeople, '/', 20);
-                return [4 /*yield*/, speedUp('_cfd_t,bizCode,dwEnv,ptag,source,strZone')];
+                console.log("\n\u5F00\u59CB\u3010\u4EAC\u4E1C\u8D26\u53F7" + index + "\u3011" + (nickName || UserName) + "\n");
+                _c.label = 6;
+            case 6:
+                _c.trys.push([6, 17, , 18]);
+                if (!!balloon) return [3 /*break*/, 8];
+                return [4 /*yield*/, speedUp('_cfd_t,bizCode,dwEnv,ptag,source,strBuildIndex,strZone')];
             case 7:
-                shell = _b.sent();
-                _i = 0, _a = shell.Data.NormShell;
-                _b.label = 8;
-            case 8:
-                if (!(_i < _a.length)) return [3 /*break*/, 14];
-                s = _a[_i];
-                j = 0;
-                _b.label = 9;
+                res = _c.sent();
+                if (res.iRet !== 0) {
+                    console.log('手动建造4个房子');
+                    return [3 /*break*/, 18];
+                }
+                console.log('今日热气球:', res.dwTodaySpeedPeople);
+                if (res.dwTodaySpeedPeople === 500) {
+                    balloon = true;
+                }
+                _c.label = 8;
+            case 8: return [4 /*yield*/, speedUp('_cfd_t,bizCode,dwEnv,ptag,source,strZone')];
             case 9:
-                if (!(j < s.dwNum)) return [3 /*break*/, 13];
-                return [4 /*yield*/, speedUp('_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', s.dwType)];
+                shell = _c.sent();
+                if (!shell.Data.hasOwnProperty('NormShell')) return [3 /*break*/, 16];
+                _i = 0, _b = shell.Data.NormShell;
+                _c.label = 10;
             case 10:
-                res = _b.sent();
+                if (!(_i < _b.length)) return [3 /*break*/, 16];
+                s = _b[_i];
+                j = 0;
+                _c.label = 11;
+            case 11:
+                if (!(j < s.dwNum)) return [3 /*break*/, 15];
+                return [4 /*yield*/, speedUp('_cfd_t,bizCode,dwEnv,dwType,ptag,source,strZone', s.dwType)];
+            case 12:
+                res = _c.sent();
+                if (res.iRet !== 0) {
+                    console.log(res);
+                    return [3 /*break*/, 15];
+                }
                 console.log('捡贝壳:', res.Data.strFirstDesc);
                 return [4 /*yield*/, wait(500)];
-            case 11:
-                _b.sent();
-                _b.label = 12;
-            case 12:
-                j++;
-                return [3 /*break*/, 9];
             case 13:
-                _i++;
-                return [3 /*break*/, 8];
+                _c.sent();
+                _c.label = 14;
             case 14:
-                i++;
-                return [3 /*break*/, 5];
-            case 15: return [3 /*break*/, 17];
-            case 16:
-                e_1 = _b.sent();
-                console.log(e_1);
-                return [3 /*break*/, 19];
+                j++;
+                return [3 /*break*/, 11];
+            case 15:
+                _i++;
+                return [3 /*break*/, 10];
+            case 16: return [3 /*break*/, 18];
             case 17:
-                t = process.env.CFD_LOOP_DELAY ? parseInt(process.env.CFD_LOOP_DELAY) : getRandomNumberByRange(10000, 25000);
-                return [4 /*yield*/, wait(t)];
+                e_1 = _c.sent();
+                console.log(e_1);
+                return [3 /*break*/, 18];
             case 18:
-                _b.sent();
+                i++;
+                return [3 /*break*/, 4];
+            case 19:
+                t = process.env.CFD_LOOP_DELAY ? parseInt(process.env.CFD_LOOP_DELAY) : getRandomNumberByRange(1000 * 30, 1000 * 60);
+                return [4 /*yield*/, wait(t)];
+            case 20:
+                _c.sent();
                 return [3 /*break*/, 3];
-            case 19: return [2 /*return*/];
+            case 21: return [2 /*return*/];
         }
     });
 }); })();
@@ -170,7 +201,7 @@ function speedUp(stk, dwType) {
                     return [3 /*break*/, 4];
                 case 3:
                     e_2 = _a.sent();
-                    reject(e_2);
+                    reject(502);
                     return [3 /*break*/, 4];
                 case 4: return [2 /*return*/];
             }
@@ -233,6 +264,68 @@ function requestAlgo() {
         });
     });
 }
+function TotalBean(cookie) {
+    var totalBean = {
+        isLogin: true,
+        nickName: ''
+    };
+    return new Promise(function (resolve) {
+        axios_1["default"].get('https://me-api.jd.com/user_new/info/GetJDUserInfoUnion', {
+            headers: {
+                Host: "me-api.jd.com",
+                Connection: "keep-alive",
+                Cookie: cookie,
+                "User-Agent": raw_TS_USER_AGENTS_1["default"],
+                "Accept-Language": "zh-cn",
+                "Referer": "https://home.m.jd.com/myJd/newhome.action?sceneval=2&ufc=&",
+                "Accept-Encoding": "gzip, deflate, br"
+            }
+        }).then(function (res) {
+            if (res.data) {
+                var data = res.data;
+                if (data['retcode'] === "1001") {
+                    totalBean.isLogin = false; //cookie过期
+                }
+                if (data['retcode'] === "0" && data['data'] && data.data.hasOwnProperty("userInfo")) {
+                    totalBean.isLogin = true;
+                    totalBean.nickName = data.data.userInfo.baseInfo.nickname;
+                }
+                resolve(totalBean);
+            }
+            else {
+                console.log('京东服务器返回空数据');
+                resolve(totalBean);
+            }
+        })["catch"](function (e) {
+            console.log('Error:', e);
+            resolve(totalBean);
+        });
+    });
+}
+function requireConfig() {
+    var cookiesArr = [];
+    return new Promise(function (resolve) {
+        console.log('开始获取配置文件\n');
+        var jdCookieNode = require('./jdCookie.js');
+        Object.keys(jdCookieNode).forEach(function (item) {
+            if (jdCookieNode[item]) {
+                cookiesArr.push(jdCookieNode[item]);
+            }
+        });
+        console.log("\u5171" + cookiesArr.length + "\u4E2A\u4EAC\u4E1C\u8D26\u53F7\n");
+        resolve(cookiesArr);
+    });
+}
+function wait(t) {
+    return new Promise(function (resolve) {
+        setTimeout(function () {
+            resolve();
+        }, t);
+    });
+}
+function getRandomNumberByRange(start, end) {
+    return Math.floor(Math.random() * (end - start) + start);
+}
 function decrypt(stk, url) {
     var timestamp = (date_fns_1.format(new Date(), 'yyyyMMddhhmmssSSS'));
     var hash1;
@@ -254,19 +347,6 @@ function decrypt(stk, url) {
     var hash2 = CryptoJS.HmacSHA256(st, hash1.toString()).toString(CryptoJS.enc.Hex);
     return encodeURIComponent(["".concat(timestamp.toString()), "".concat(fingerprint.toString()), "".concat(appId.toString()), "".concat(token), "".concat(hash2)].join(";"));
 }
-function requireConfig() {
-    return new Promise(function (resolve) {
-        console.log('开始获取配置文件\n');
-        var jdCookieNode = require('./jdCookie.js');
-        Object.keys(jdCookieNode).forEach(function (item) {
-            if (jdCookieNode[item]) {
-                cookiesArr.push(jdCookieNode[item]);
-            }
-        });
-        console.log("\u5171" + cookiesArr.length + "\u4E2A\u4EAC\u4E1C\u8D26\u53F7\n");
-        resolve();
-    });
-}
 function generateFp() {
     var e = "0123456789";
     var a = 13;
@@ -281,14 +361,4 @@ function getQueryString(url, name) {
     if (r != null)
         return unescape(r[2]);
     return '';
-}
-function wait(t) {
-    return new Promise(function (resolve) {
-        setTimeout(function () {
-            resolve();
-        }, t);
-    });
-}
-function getRandomNumberByRange(start, end) {
-    return Math.floor(Math.random() * (end - start) + start);
 }
