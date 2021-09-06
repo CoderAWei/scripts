@@ -68,7 +68,7 @@ if ($.isNode()) {
     $.canHelp = true;
     cookie = cookiesArr[i];
     $.UserName = decodeURIComponent(cookie.match(/pt_pin=([^; ]+)(?=;?)/) && cookie.match(/pt_pin=([^; ]+)(?=;?)/)[1])
-    await openGroup()
+    if (i === 0) await openGroup()
     if ($.canHelp) {
       for (let j = 0; j < $.pinList.length; j++) {
         if ($.UserName === $.pinList[j].username) continue
