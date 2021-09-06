@@ -16,7 +16,7 @@ $.gruopId = ''
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let UA = `jdapp;android;10.0.10;11;6353336653534626-5343631343032623;network/wifi;model/M2011K2C;addressid/138381132;aid/653f55db546140b2;oaid/49ce3366eea587ee;osVer/30;appBuild/89313;partner/xiaomi001;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2011K2C Build/RKQ1.200928.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045709 Mobile Safari/537.36`
-$.activityKey = 'ebac35856fbbb121653a4006cbb681c9'
+$.activityKey = '66f241a0515adf04b2ecb500827b119d'
 $.tokenKey = '' // AAEAILuQ-3313nyd1c3XtjZN0SF6VMdTs1N4qm8dkLF892oq0
 
 if ($.isNode()) {
@@ -149,8 +149,10 @@ function getHomeInfo() {
     $.post(options, (err, resp, data) => {
       try {
         const reust = JSON.parse(data)
-        console.log(`当前共有${reust.data.result.collectedCardsNum}张卡片，`)
-
+        if (Number(reust.data.rtn_code) === 0) {
+          $.activityKey = reust.data.result.activityKey
+          console.log(`当前共有${reust.data.result.collectedCardsNum}张卡片，`)
+        }
       } catch (e) {
         $.logErr(e, resp);
       } finally {
@@ -227,9 +229,12 @@ function getPin() {
 
 function getTaskList() {
   return new Promise((resolve, reject) => {
+    const params = {
+      activityKey: $.activityKey
+    }
     let options = {
-      url: `https://api.m.jd.com/api?functionId=necklacecard_taskList&appid=coupon-necklace&client=wh5&t=1627873974899`,
-      body: `body={"activityKey":"ebac35856fbbb121653a4006cbb681c9"}`,
+      url: `https://api.m.jd.com/api?functionId=necklacecard_taskList&appid=coupon-necklace&client=wh5&t=${new Date().getTime()}`,
+      body: `body=${JSON.stringify(params)}`,
       headers: {
         'User-Agent': UA,
         "Cookie": cookie,
@@ -241,20 +246,25 @@ function getTaskList() {
     $.post(options, async(err, resp, data) => {
       try {
         const reust = JSON.parse(data)
-        const tasks = reust.data.result.componentTaskInfo
-        // console.log(tasks)
-        for(let i = 0; i < tasks.length; i++) {
-          if (tasks[i].taskStatus === 3) {
-            console.log(`当前任务 ${tasks[i].name || tasks[i].taskTitle} 已完成`)
-            continue
-          }
-          if (tasks[i].encryptTaskId) {
-            // console.log(tasks[i].encryptTaskId, tasks[i].itemId)
-            const res = await taskReport(tasks[i].encryptTaskId, tasks[i].itemId)
-            console.log(`${tasks[i].name || tasks[i].taskTitle}: ${res}`)
-          } else continue
+        if (Number(reust.rtn_code) === 0) {
+          const tasks = reust.data.result.componentTaskInfo
+          // console.log(tasks)
+          for(let i = 0; i < tasks.length; i++) {
+            if (tasks[i].taskStatus === 3) {
+              console.log(`当前任务 ${tasks[i].name || tasks[i].taskTitle} 已完成`)
+              continue
+            }
+            if (tasks[i].encryptTaskId) {
+              // console.log(tasks[i].encryptTaskId, tasks[i].itemId)
+              const res = await taskReport(tasks[i].encryptTaskId, tasks[i].itemId)
+              console.log(`${tasks[i].name || tasks[i].taskTitle}: ${res}`)
+            } else continue
 
+          }
+        } else {
+          console.log(`💥${reust.rtn_msg}`)
         }
+
 
       } catch (e) {
         $.logErr(e, resp);
@@ -379,8 +389,9 @@ function help() {
 async function TotalBean() {
     return new Promise(async resolve => {
       const options = {
-        "url": `https://wq.jd.com/user/info/QueryJDUserInfo?sceneval=2`,
+        "url": `https://me-api.jd.com/user_new/info/GetJDUserInfoUnion`,
         "headers": {
+          'Host': "me-api.jd.com",
           "Accept": "application/json,text/plain, */*",
           "Content-Type": "application/x-www-form-urlencoded",
           "Accept-Encoding": "gzip, deflate, br",
