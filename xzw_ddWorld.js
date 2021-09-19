@@ -26,7 +26,7 @@ let UA = ''
 $.hotFlag = false
 $.outFlag = false
 $.assistToken = 'T0225KkcRkoc91DVIx2hkfALcgCjRVmIaV5kRrbA'
-$.assistInviter = 'Jo250NiIScRn5f-7kseWcsdDu_qMbCRc3TYtNfsV9WY'
+$.assistInviter = '_GbybhETo2AdiYji8KVQtF8U6Tad2ez386gRQMrCjNI'
 $.temp = [];
 !(async () => {
   if (!cookiesArr[0]) {
