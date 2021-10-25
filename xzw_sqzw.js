@@ -16,7 +16,7 @@ $.gruopId = ''
 //IOS等用户直接用NobyDa的jd cookie
 let cookiesArr = [], cookie = '', message;
 let UA = `jdapp;android;10.0.10;11;6353336653534626-5343631343032623;network/wifi;model/M2011K2C;addressid/138381132;aid/653f55db546140b2;oaid/49ce3366eea587ee;osVer/30;appBuild/89313;partner/xiaomi001;eufv/1;jdSupportDarkMode/0;Mozilla/5.0 (Linux; Android 11; M2011K2C Build/RKQ1.200928.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/77.0.3865.120 MQQBrowser/6.2 TBS/045709 Mobile Safari/537.36`
-$.activityKey = '66f241a0515adf04b2ecb500827b119d'
+$.activityKey = '53275a405ec3cba14b28662e05f6c53b'
 $.tokenKey = '' // AAEAILuQ-3313nyd1c3XtjZN0SF6VMdTs1N4qm8dkLF892oq0
 
 if ($.isNode()) {
@@ -136,7 +136,7 @@ function openGroup() {
 function getHomeInfo() {
   return new Promise((resolve, reject) => {
     let options = {
-      url: `https://api.m.jd.com/api?functionId=necklacecard_cardHomePage&appid=coupon-necklace&client=wh5&t=1627885690799`,
+      url: `https://api.m.jd.com/api?functionId=necklacecard_cardHomePage&appid=coupon-necklace&client=wh5&t=${new Date().getTime()}`,
       body: `body=${JSON.stringify({activityKey: $.activityKey})}`,
       headers: {
         'User-Agent': UA,
@@ -151,7 +151,7 @@ function getHomeInfo() {
         const reust = JSON.parse(data)
         if (Number(reust.data.rtn_code) === 0) {
           $.activityKey = reust.data.result.activityKey
-          console.log(`当前共有${reust.data.result.collectedCardsNum}张卡片，`)
+          console.log(`当前共有${reust.data.result.collectedCardsNum}张卡片，总共需要${reust.data.result.totalCardsNum}张卡片`)
         }
       } catch (e) {
         $.logErr(e, resp);
@@ -245,8 +245,11 @@ function getTaskList() {
 
     $.post(options, async(err, resp, data) => {
       try {
+        // console.log(data)
         const reust = JSON.parse(data)
+
         if (Number(reust.rtn_code) === 0) {
+
           const tasks = reust.data.result.componentTaskInfo
           // console.log(tasks)
           for(let i = 0; i < tasks.length; i++) {
