@@ -1,10 +1,9 @@
 /*
 #胜券在握
 
-入口 京东 频道 美食馆
+入口 京东 领劵 点点券
 [task_local]
 0 11 * * *
-活动地址： https://h5.m.jd.com/babelDiy/Zeus/3Ck6vd8Tz4sJFme5keU9KifFM3aW/index.html?babelChannel=ttt7&activityKey=ebac35856fbbb121653a4006cbb681c9&tttparams=bPQ5UKeB8eyJnTGF0IjoiMzAuNzA4NzQiLCJnTG5nIjoiMTA0LjA5NDc0Mi9J9&lng=104.067741&lat=30.552235
 */
 const $ = new Env('胜券在握');
 const notify = $.isNode() ? require('./sendNotify') : '';
@@ -149,9 +148,9 @@ function getHomeInfo() {
     $.post(options, (err, resp, data) => {
       try {
         const reust = JSON.parse(data)
-        if (Number(reust.data.rtn_code) === 0) {
+        if (Number(reust.rtn_code) === 0) {
           $.activityKey = reust.data.result.activityKey
-          console.log(`当前共有${reust.data.result.collectedCardsNum}张卡片，总共需要${reust.data.result.totalCardsNum}张卡片`)
+          console.log(`当前共有 ${reust.data.result.collectedCardsNum} 张卡片，总共需要 ${reust.data.result.totalCardsNum} 张卡片`)
         }
       } catch (e) {
         $.logErr(e, resp);
