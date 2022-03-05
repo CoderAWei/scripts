@@ -1,27 +1,4 @@
-/*
-东东水果:脚本更新地址 jd_fruit_task.js
-更新时间：2021-5-18
-活动入口：京东APP我的-更多工具-东东农场
-东东农场活动链接：https://h5.m.jd.com/babelDiy/Zeus/3KSjXqQabiTuD1cJ28QskrpWoBKT/index.html
-已支持IOS双京东账号,Node.js支持N个京东账号
-脚本兼容: QuantumultX, Surge, Loon, JSBox, Node.js
-互助码shareCode请先手动运行脚本查看打印可看到
-一天只能帮助3个人。多出的助力码无效
-==========================Quantumultx=========================
-[task_local]
-#jd免费水果
-5 6-18/6 * * * jd_fruit_task.js, tag=东东农场日常任务, img-url=https://raw.githubusercontent.com/58xinian/icon/master/jdnc.png, enabled=true
-=========================Loon=============================
-[Script]
-cron "5 6-18/6 * * *" script-path=jd_fruit_task.js,tag=东东农场日常任务
-=========================Surge============================
-东东农场日常任务 = type=cron,cronexp="5 6-18/6 * * *",wake-system=1,timeout=3600,script-path=jd_fruit_task.js
-=========================小火箭===========================
-东东农场日常任务 = type=cron,script-path=jd_fruit_task.js, cronexpr="5 6-18/6 * * *", timeout=3600, enable=true
-export DO_TEN_WATER_AGAIN="" 默认再次浇水
-每号间隔（毫秒），默认0毫秒（0分钟）
-export fruit_sleep=20000
-*/
+
 const $ = new Env('东东农场日常任务');
 let cookiesArr = [],
     cookie = '',
@@ -31,11 +8,7 @@ let cookiesArr = [],
 //助力好友分享码(最多3个,否则后面的助力失败),原因:京东农场每人每天只有3次助力机会
 //此此内容是IOS用户下载脚本到本地使用，填写互助码的地方，同一京东账号的好友互助码请使用@符号隔开。
 //下面给出两个账号的填写示例（iOS只支持2个京东账号）
-let shareCodes = [ // 这个列表填入你要助力的好友的shareCode
-    //     //账号一的好友shareCode,不同好友的shareCode中间用@符号隔开
-    //     '5853550f71014282912b76d95beb84c0@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
-    //     //账号二的好友shareCode,不同好友的shareCode中间用@符号隔开
-    //     '5853550f71014282912b76d95beb84c0@b58ddba3317b44ceb0ac86ea8952998c@8d724eb95e3847b6a1526587d1836f27@a80b7d1db41a4381b742232da9d22443@ce107b8f64d24f62a92292180f764018@c73ea563a77d4464b273503d3838fec1@0dd9a7fd1feb449fb1bf854a3ec0e801',
+let shareCodes = [
    51dfa37312514e77bc09ca6c5b57967e@2f46194f53204bb282c3402235a0ee91@6f7c13e6dbd2410fac294887550e135f@2d56922e166b4bf184d8c9f2a461a213@2b921ee72c934153a0cfd8ce02d9fe7f@63867bc625fe4dab8f8ed043c2ed0161@60821cdb026340fdb97f52d5c1b2bb81@aa3b587a48894b0c853cb48eb6066af0@3a171d501b2f466881a95a58ce1ffad5@02b7e911eb0a47139e92cc3fc846c1a9@6f7c13e6dbd2410fac294887550e135f@e9b1c5c9f16942aeb6f0a01e8167257a@2d8fcc85d1c34203acb81f3672590ab5@a566060c25b449a2a8aaa1294e438516@0894eabd2c224303abaffa7e880b9d23,
    51dfa37312514e77bc09ca6c5b57967e@2f46194f53204bb282c3402235a0ee91@6f7c13e6dbd2410fac294887550e135f@2d56922e166b4bf184d8c9f2a461a213@2b921ee72c934153a0cfd8ce02d9fe7f@63867bc625fe4dab8f8ed043c2ed0161@60821cdb026340fdb97f52d5c1b2bb81@aa3b587a48894b0c853cb48eb6066af0@3a171d501b2f466881a95a58ce1ffad5@02b7e911eb0a47139e92cc3fc846c1a9@6f7c13e6dbd2410fac294887550e135f@e9b1c5c9f16942aeb6f0a01e8167257a@2d8fcc85d1c34203acb81f3672590ab5@a566060c25b449a2a8aaa1294e438516@0894eabd2c224303abaffa7e880b9d23,
    51dfa37312514e77bc09ca6c5b57967e@2f46194f53204bb282c3402235a0ee91@6f7c13e6dbd2410fac294887550e135f@2d56922e166b4bf184d8c9f2a461a213@2b921ee72c934153a0cfd8ce02d9fe7f@63867bc625fe4dab8f8ed043c2ed0161@60821cdb026340fdb97f52d5c1b2bb81@aa3b587a48894b0c853cb48eb6066af0@3a171d501b2f466881a95a58ce1ffad5@02b7e911eb0a47139e92cc3fc846c1a9@6f7c13e6dbd2410fac294887550e135f@e9b1c5c9f16942aeb6f0a01e8167257a@2d8fcc85d1c34203acb81f3672590ab5@a566060c25b449a2a8aaa1294e438516@0894eabd2c224303abaffa7e880b9d23,
@@ -54,7 +27,7 @@ let message = '',
     subTitle = '',
     option = {},
     isFruitFinished = false;
-const retainWater = $.isNode() ? (process.env.retainWater ? process.env.retainWater : 100) : ($.getdata('retainWater') ? $.getdata('retainWater') : 100); //保留水滴大于多少g,默认100g;
+const retainWater = $.isNode() ? (process.env.retainWater ? process.env.retainWater : 100) : ($.getdata('retainWater') ? $.getdata('retainWater') : 60); //保留水滴大于多少g,默认100g;
 let jdNotify = false; //是否关闭通知，false打开通知推送，true关闭通知推送
 let jdFruitBeanCard = false; //农场使用水滴换豆卡(如果出现限时活动时100g水换20豆,此时比浇水划算,推荐换豆),true表示换豆(不浇水),false表示不换豆(继续浇水),脚本默认是浇水
 let randomCount = $.isNode() ? 20 : 5;
