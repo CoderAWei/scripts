@@ -6,4 +6,5 @@ services:
       - ./data:/home/qinglong
     ports:
       - "0.0.0.0:9439:5700"
+    container_name: ql
     restart: unless-stopped
