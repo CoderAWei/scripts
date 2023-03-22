@@ -3,7 +3,7 @@ services:
   web:
     image: whyour/qinglong:latest
     volumes:
-      - ./data:/home/ql/data
+      - ./data:/home/qinglong
     ports:
-      - "0.0.0.0:9439:9439"
+      - "0.0.0.0:9439:5700"
     restart: unless-stopped
